@@ -1,0 +1,2 @@
+||fingerprintjs.com^
+||fpjs.io^
