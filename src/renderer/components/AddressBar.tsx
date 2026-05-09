@@ -5,10 +5,12 @@ interface Props {
   url: string;
   isLoading: boolean;
   blockedCount: number;
+  isBookmarked: boolean;
   onNavigate: (url: string) => void;
+  onToggleBookmark: () => void;
 }
 
-export default function AddressBar({ url, isLoading, blockedCount, onNavigate }: Props) {
+export default function AddressBar({ url, isLoading, blockedCount, isBookmarked, onNavigate, onToggleBookmark }: Props) {
   const [value, setValue] = useState(url);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,6 +29,14 @@ export default function AddressBar({ url, isLoading, blockedCount, onNavigate }:
     <div className="address-bar">
       <form className="address-form" onSubmit={handleSubmit}>
         <span className="address-lock">{isHttps ? '🔒' : '⚠️'}</span>
+        {url && !url.startsWith('about:') && (
+          <button
+            type="button"
+            className={`address-bookmark ${isBookmarked ? 'bookmarked' : ''}`}
+            onClick={onToggleBookmark}
+            title={isBookmarked ? '移除收藏' : '添加收藏'}
+          >{isBookmarked ? '★' : '☆'}</button>
+        )}
         <input
           ref={inputRef}
           className="address-input"

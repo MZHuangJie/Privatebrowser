@@ -12,11 +12,12 @@ interface Props {
   theme: string;
   onToggleTheme: () => void;
   onOpenSettings: () => void;
+  onOpenBookmarks: () => void;
 }
 
 export default function ToolBar({
   canGoBack, canGoForward, isLoading, onBack, onForward, onStop, onReload,
-  theme, onToggleTheme, onOpenSettings,
+  theme, onToggleTheme, onOpenBookmarks, onOpenSettings,
 }: Props) {
   return (
     <div className="toolbar">
@@ -31,6 +32,7 @@ export default function ToolBar({
       </div>
       <div className="toolbar-title">SafeView</div>
       <div className="toolbar-actions">
+        <button className="tool-btn" onClick={onOpenBookmarks} title="Bookmarks">⭐</button>
         <button className="tool-btn" onClick={onToggleTheme} title="Toggle theme">
 🎨
         </button>

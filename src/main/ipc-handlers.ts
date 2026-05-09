@@ -72,9 +72,16 @@ export function registerIpcHandlers(
 
   ipcMain.handle('bookmarks:add', (_e, bookmark: { title: string; url: string }) => {
     const bookmarks = storeManager.getBookmarks();
-    bookmarks.push(bookmark);
-    storeManager.setBookmarks(bookmarks);
+    if (!bookmarks.some((b) => b.url === bookmark.url)) {
+      bookmarks.push(bookmark);
+      storeManager.setBookmarks(bookmarks);
+    }
     return bookmarks;
+  });
+
+  ipcMain.handle('bookmarks:remove', (_e, url: string) => {
+    storeManager.removeBookmark(url);
+    return storeManager.getBookmarks();
   });
 
   ipcMain.handle('window:minimize', () => {

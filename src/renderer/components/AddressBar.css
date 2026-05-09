@@ -15,6 +15,20 @@
 
 .address-lock { font-size: 12px; flex-shrink: 0; }
 
+.address-bookmark {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0 2px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.address-bookmark:hover { color: var(--accent-yellow); }
+.address-bookmark.bookmarked { color: var(--accent-yellow); }
+
 .address-input {
   flex: 1;
   background: none;

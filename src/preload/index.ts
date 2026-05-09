@@ -50,6 +50,8 @@ const api = {
       ipcRenderer.invoke('bookmarks:get'),
     add: (bookmark: { title: string; url: string }) =>
       ipcRenderer.invoke('bookmarks:add', bookmark),
+    remove: (url: string) =>
+      ipcRenderer.invoke('bookmarks:remove', url),
   },
 };
 

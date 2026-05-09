@@ -97,6 +97,11 @@ export class StoreManager {
     this.store.set('bookmarks', this.encrypt(JSON.stringify(bookmarks)));
   }
 
+  removeBookmark(url: string): void {
+    const bookmarks = this.getBookmarks().filter((b) => b.url !== url);
+    this.setBookmarks(bookmarks);
+  }
+
   isEncryptionAvailable(): boolean {
     return safeStorage.isEncryptionAvailable();
   }

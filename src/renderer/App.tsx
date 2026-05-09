@@ -6,12 +6,17 @@ import ToolBar from './components/ToolBar';
 import StatusBar from './components/StatusBar';
 import SettingsPanel from './components/SettingsPanel';
 import NewTabPage from './components/NewTabPage';
+import BookmarksPanel from './components/BookmarksPanel';
+
+interface Bookmark { title: string; url: string; }
 
 export default function App() {
   const [tabs, setTabs] = useState<TabState[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [settings, setSettings] = useState<BrowserSettings>(DEFAULT_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [theme, setTheme] = useState<ThemeMode>('dark');
 
   const activeTab = tabs.find((t) => t.id === activeTabId) ?? null;
@@ -23,6 +28,7 @@ export default function App() {
       setSettings(s);
       applyTheme(s.theme);
     });
+    window.privbrowser.bookmarks.get().then(setBookmarks);
     window.privbrowser.tabs.onUpdate((updated) => {
       setTabs((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
     });
@@ -98,6 +104,27 @@ export default function App() {
     await window.privbrowser.nav.go(tabId, finalUrl);
   }, [activeTabId, settings.searchEngine]);
 
+  const isBookmarked = activeTab?.url ? bookmarks.some((b) => b.url === activeTab.url) : false;
+
+  const handleToggleBookmark = useCallback(async () => {
+    if (!activeTab?.url || activeTab.url === 'about:blank') return;
+    if (isBookmarked) {
+      const updated = await window.privbrowser.bookmarks.remove(activeTab.url);
+      setBookmarks(updated);
+    } else {
+      const updated = await window.privbrowser.bookmarks.add({
+        title: activeTab.title || activeTab.url,
+        url: activeTab.url,
+      });
+      setBookmarks(updated);
+    }
+  }, [activeTab, isBookmarked]);
+
+  const handleRemoveBookmark = useCallback(async (url: string) => {
+    const updated = await window.privbrowser.bookmarks.remove(url);
+    setBookmarks(updated);
+  }, []);
+
   const handleSettingsChange = useCallback(async (partial: Partial<BrowserSettings>) => {
     const updated = await window.privbrowser.settings.set(partial);
     setSettings(updated);
@@ -120,6 +147,13 @@ export default function App() {
           const next = themeCycle[(idx + 1) % themeCycle.length];
           handleSettingsChange({ theme: next });
         }}
+        onOpenBookmarks={() => {
+          setShowBookmarks((v) => {
+            if (!v) window.privbrowser.tabs.hideActive();
+            else window.privbrowser.tabs.showActive();
+            return !v;
+          });
+        }}
         onOpenSettings={() => {
           setShowSettings((v) => {
             if (!v) window.privbrowser.tabs.hideActive();
@@ -132,7 +166,9 @@ export default function App() {
         url={activeTab?.url ?? ''}
         isLoading={activeTab?.isLoading ?? false}
         blockedCount={activeTab?.blockedCount ?? 0}
+        isBookmarked={isBookmarked}
         onNavigate={handleNavigate}
+        onToggleBookmark={handleToggleBookmark}
       />
       <TabBar
         tabs={tabs}
@@ -160,6 +196,21 @@ export default function App() {
           onClose={() => {
             window.privbrowser.tabs.showActive();
             setShowSettings(false);
+          }}
+        />
+      )}
+      {showBookmarks && (
+        <BookmarksPanel
+          bookmarks={bookmarks}
+          onNavigate={(url) => {
+            handleNavigate(url);
+            setShowBookmarks(false);
+            window.privbrowser.tabs.showActive();
+          }}
+          onRemove={handleRemoveBookmark}
+          onClose={() => {
+            window.privbrowser.tabs.showActive();
+            setShowBookmarks(false);
           }}
         />
       )}
