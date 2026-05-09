@@ -29,6 +29,9 @@ export default function ToolBar({
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
         <button className="tool-btn" onClick={onOpenSettings} title="Settings">⚙</button>
+        <button className="tool-btn win-btn" onClick={() => window.privbrowser.window.minimize()} title="Minimize">─</button>
+        <button className="tool-btn win-btn" onClick={() => window.privbrowser.window.maximize()} title="Maximize">□</button>
+        <button className="tool-btn win-btn win-close" onClick={() => window.privbrowser.window.close()} title="Close">×</button>
       </div>
     </div>
   );

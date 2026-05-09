@@ -44,3 +44,7 @@
 
 .tool-btn:hover { background: var(--bg-hover); }
 .tool-btn:disabled { color: var(--text-muted); cursor: default; }
+
+.win-btn { font-size: 12px; }
+
+.win-close:hover { background: #e81123; color: white; }

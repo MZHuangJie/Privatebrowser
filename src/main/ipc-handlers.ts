@@ -1,11 +1,12 @@
-import { ipcMain } from 'electron';
+import { ipcMain, BrowserWindow } from 'electron';
 import { TabManager } from './tab-manager';
 import { StoreManager } from './store-manager';
 import { BrowserSettings } from '../shared/types';
 
 export function registerIpcHandlers(
   tabManager: TabManager,
-  storeManager: StoreManager
+  storeManager: StoreManager,
+  mainWindow: BrowserWindow
 ): void {
   ipcMain.handle('tab:create', (_e, url?: string) => {
     return tabManager.createTab(url);
@@ -70,5 +71,21 @@ export function registerIpcHandlers(
     bookmarks.push(bookmark);
     storeManager.setBookmarks(bookmarks);
     return bookmarks;
+  });
+
+  ipcMain.handle('window:minimize', () => {
+    mainWindow.minimize();
+  });
+
+  ipcMain.handle('window:maximize', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  });
+
+  ipcMain.handle('window:close', () => {
+    mainWindow.close();
   });
 }

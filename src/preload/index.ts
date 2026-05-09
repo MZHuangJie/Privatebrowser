@@ -32,6 +32,12 @@ const api = {
       ipcRenderer.invoke('settings:set', partial),
   },
 
+  window: {
+    minimize: (): Promise<void> => ipcRenderer.invoke('window:minimize'),
+    maximize: (): Promise<void> => ipcRenderer.invoke('window:maximize'),
+    close: (): Promise<void> => ipcRenderer.invoke('window:close'),
+  },
+
   bookmarks: {
     get: (): Promise<{ title: string; url: string }[]> =>
       ipcRenderer.invoke('bookmarks:get'),

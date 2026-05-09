@@ -30,7 +30,7 @@ function createWindow(): void {
   });
 
   tabManager = new TabManager(mainWindow, privacyEngine, settings);
-  registerIpcHandlers(tabManager, storeManager);
+  registerIpcHandlers(tabManager, storeManager, mainWindow);
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:5173');
