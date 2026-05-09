@@ -63,7 +63,13 @@ export default function App() {
   };
 
   const handleNavigate = useCallback(async (url: string) => {
-    if (!activeTabId) return;
+    let tabId = activeTabId;
+    if (!tabId) {
+      const tab = await window.privbrowser.tabs.create();
+      setTabs((prev) => [...prev, tab]);
+      setActiveTabId(tab.id);
+      tabId = tab.id;
+    }
     let finalUrl = url;
     if (isUrlLike(url)) {
       if (!/^(https?:\/\/|about:)/.test(url)) {
@@ -79,7 +85,7 @@ export default function App() {
       };
       finalUrl = (searchUrls[settings.searchEngine] || searchUrls.google) + encodeURIComponent(url);
     }
-    await window.privbrowser.nav.go(activeTabId, finalUrl);
+    await window.privbrowser.nav.go(tabId, finalUrl);
   }, [activeTabId, settings.searchEngine]);
 
   const handleSettingsChange = useCallback(async (partial: Partial<BrowserSettings>) => {
