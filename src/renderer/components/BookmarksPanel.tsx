@@ -18,8 +18,10 @@ export default function BookmarksPanel({ bookmarks, onNavigate, onRemove, onClos
   }
 
   return (
-    <div className="bookmarks-overlay" onClick={onClose}>
-      <div className="bookmarks-panel" onClick={(e) => e.stopPropagation()}>
+    <>
+      <div className="bookmarks-backdrop" onClick={onClose} />
+      <div className="bookmarks-overlay">
+        <div className="bookmarks-panel" onClick={(e) => e.stopPropagation()}>
         <div className="bookmarks-header">
           <h3>收藏夹</h3>
           <button className="bookmarks-close" onClick={onClose}>×</button>
@@ -53,5 +55,6 @@ export default function BookmarksPanel({ bookmarks, onNavigate, onRemove, onClos
         </div>
       </div>
     </div>
+    </>
   );
 }

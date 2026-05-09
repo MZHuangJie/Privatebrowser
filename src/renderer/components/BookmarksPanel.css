@@ -1,20 +1,22 @@
-.bookmarks-overlay {
+.bookmarks-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 80px;
-  z-index: 999;
+  z-index: 9;
+}
+
+.bookmarks-overlay {
+  position: absolute;
+  top: 72px;
+  right: 8px;
+  z-index: 10;
 }
 
 .bookmarks-panel {
   background: var(--bg-primary);
   border: 1px solid var(--border);
   border-radius: 12px;
-  width: 480px;
-  max-height: 400px;
+  width: 420px;
+  max-height: calc(100vh - 140px);
   overflow-y: auto;
   box-shadow: 0 8px 32px var(--shadow);
 }
