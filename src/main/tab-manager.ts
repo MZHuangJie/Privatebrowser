@@ -154,8 +154,18 @@ export class TabManager {
     }
   }
 
+  updateActiveBounds(): void {
+    if (this.activeTabId) {
+      const entry = this.tabs.get(this.activeTabId);
+      if (entry?.view) this.setBounds(entry.view);
+    }
+  }
+
   switchTab(tabId: string): void {
-    if (this.activeTabId === tabId) return;
+    if (this.activeTabId === tabId) {
+      this.updateActiveBounds();
+      return;
+    }
     const prevEntry = this.activeTabId ? this.tabs.get(this.activeTabId) : null;
     if (prevEntry && prevEntry.view) this.setViewHidden(prevEntry.view);
 

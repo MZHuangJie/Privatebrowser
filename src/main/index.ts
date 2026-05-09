@@ -39,9 +39,8 @@ function createWindow(): void {
   }
 
   mainWindow.on('resize', () => {
-    if (tabManager && mainWindow) {
-      const activeId = tabManager.getActiveTabId();
-      if (activeId) tabManager.switchTab(activeId);
+    if (tabManager) {
+      tabManager.updateActiveBounds();
     }
   });
 
