@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react';
+import './WebView.css';
 
 interface Props {
   tabId: string;
