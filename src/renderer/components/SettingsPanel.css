@@ -74,6 +74,14 @@
   cursor: pointer;
 }
 
+.theme-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
 .settings-select {
   background: var(--bg-tertiary);
   border: 1px solid var(--border);

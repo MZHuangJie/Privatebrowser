@@ -14,10 +14,15 @@ const PRIVACY_OPTIONS: { value: PrivacyLevel; label: string }[] = [
   { value: 'relaxed', label: '宽松 — 仅拦截恶意域名' },
 ];
 
-const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
-  { value: 'dark', label: '暗色' },
-  { value: 'light', label: '亮色' },
-  { value: 'system', label: '跟随系统' },
+const THEME_OPTIONS: { value: ThemeMode; label: string; preview: string }[] = [
+  { value: 'dark',     label: '暗色',     preview: '#1e1e2e' },
+  { value: 'light',    label: '亮色',     preview: '#eff1f5' },
+  { value: 'midnight', label: '午夜蓝',   preview: '#0f0f1a' },
+  { value: 'forest',   label: '森林绿',   preview: '#1a221e' },
+  { value: 'sunset',   label: '日落橙',   preview: '#241a1a' },
+  { value: 'ocean',    label: '海洋蓝',   preview: '#181f28' },
+  { value: 'lavender', label: '薰衣草紫', preview: '#1e1a28' },
+  { value: 'system',   label: '跟随系统', preview: 'auto' },
 ];
 
 const ENGINE_OPTIONS = Object.entries(SEARCH_ENGINES) as [SearchEngine, { name: string; icon: string }][];
@@ -60,6 +65,9 @@ export default function SettingsPanel({ settings, onChange, onClose }: Props) {
                     checked={settings.theme === opt.value}
                     onChange={() => onChange({ theme: opt.value })}
                   />
+                  {opt.preview !== 'auto' && (
+                    <span className="theme-dot" style={{ background: opt.preview }} />
+                  )}
                   <span>{opt.label}</span>
                 </label>
               ))}

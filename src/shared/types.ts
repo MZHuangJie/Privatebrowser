@@ -12,7 +12,7 @@ export interface TabState {
 
 export type PrivacyLevel = 'strict' | 'balanced' | 'relaxed';
 
-export type ThemeMode = 'dark' | 'light' | 'system';
+export type ThemeMode = 'dark' | 'light' | 'midnight' | 'forest' | 'sunset' | 'ocean' | 'lavender' | 'system';
 
 export type SearchEngine = 'google' | 'duckduckgo' | 'bing' | 'baidu' | 'searxng';
 

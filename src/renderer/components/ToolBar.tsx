@@ -7,7 +7,7 @@ interface Props {
   onBack: () => void;
   onForward: () => void;
   onReload: () => void;
-  theme: 'dark' | 'light';
+  theme: string;
   onToggleTheme: () => void;
   onOpenSettings: () => void;
 }
@@ -26,7 +26,7 @@ export default function ToolBar({
       <div className="toolbar-title">SafeView</div>
       <div className="toolbar-actions">
         <button className="tool-btn" onClick={onToggleTheme} title="Toggle theme">
-          {theme === 'dark' ? '☀️' : '🌙'}
+🎨
         </button>
         <button className="tool-btn" onClick={onOpenSettings} title="Settings">⚙</button>
         <button className="tool-btn win-btn" onClick={() => window.privbrowser.window.minimize()} title="Minimize">─</button>

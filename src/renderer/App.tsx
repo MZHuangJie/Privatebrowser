@@ -12,9 +12,11 @@ export default function App() {
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [settings, setSettings] = useState<BrowserSettings>(DEFAULT_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<ThemeMode>('dark');
 
   const activeTab = tabs.find((t) => t.id === activeTabId) ?? null;
+
+  const themeCycle: ThemeMode[] = ['dark', 'midnight', 'forest', 'sunset', 'ocean', 'lavender', 'light'];
 
   useEffect(() => {
     window.privbrowser.settings.get().then((s) => {
@@ -112,8 +114,9 @@ export default function App() {
         onReload={() => activeTabId && window.privbrowser.nav.reload(activeTabId)}
         theme={theme}
         onToggleTheme={() => {
-          const next = theme === 'dark' ? 'light' : 'dark';
-          handleSettingsChange({ theme: next as ThemeMode });
+          const idx = themeCycle.indexOf(theme === 'system' ? 'dark' : theme);
+          const next = themeCycle[(idx + 1) % themeCycle.length];
+          handleSettingsChange({ theme: next });
         }}
         onOpenSettings={() => {
           setShowSettings((v) => {
