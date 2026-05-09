@@ -163,13 +163,7 @@ export default function App() {
           const next = themeCycle[(idx + 1) % themeCycle.length];
           handleSettingsChange({ theme: next });
         }}
-        onOpenBookmarks={() => {
-          setShowBookmarks((v) => {
-            if (!v) window.privbrowser.tabs.hideActive();
-            else window.privbrowser.tabs.showActive();
-            return !v;
-          });
-        }}
+        onOpenBookmarks={() => setShowBookmarks((v) => !v)}
         onOpenSettings={() => {
           setShowSettings((v) => {
             if (!v) window.privbrowser.tabs.hideActive();
@@ -222,13 +216,9 @@ export default function App() {
           onNavigate={(url) => {
             handleNavigate(url);
             setShowBookmarks(false);
-            window.privbrowser.tabs.showActive();
           }}
           onRemove={handleRemoveBookmark}
-          onClose={() => {
-            window.privbrowser.tabs.showActive();
-            setShowBookmarks(false);
-          }}
+          onClose={() => setShowBookmarks(false)}
         />
       )}
       {showBookmarkEdit && activeTab && (
