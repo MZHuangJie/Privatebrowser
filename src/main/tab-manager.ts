@@ -1,5 +1,6 @@
 import { BrowserView, BrowserWindow, session } from 'electron';
 import { v4 as uuidv4 } from 'uuid';
+import * as path from 'path';
 import { TabState, BrowserSettings } from '../shared/types';
 import { PrivacyEngine } from './privacy-engine';
 
@@ -15,11 +16,13 @@ export class TabManager {
   private window: BrowserWindow;
   private privacyEngine: PrivacyEngine;
   private settings: BrowserSettings;
+  private newTabUrl: string;
 
   constructor(window: BrowserWindow, privacyEngine: PrivacyEngine, settings: BrowserSettings) {
     this.window = window;
     this.privacyEngine = privacyEngine;
     this.settings = settings;
+    this.newTabUrl = `file://${path.join(__dirname, '..', '..', 'renderer', 'newtab.html')}`;
   }
 
   createTab(url?: string): TabState {
@@ -42,7 +45,7 @@ export class TabManager {
 
     const newTab: TabState = {
       id,
-      url: url || 'about:blank',
+      url: url || this.newTabUrl,
       title: 'New Tab',
       isLoading: true,
       canGoBack: false,
@@ -57,9 +60,7 @@ export class TabManager {
 
     this.setupViewEvents(view, id);
 
-    if (url) {
-      this.navigate(id, url);
-    }
+    this.navigate(id, url || this.newTabUrl);
 
     this.window.addBrowserView(view);
     this.setBounds(view);

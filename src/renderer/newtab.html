@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Tab</title>
+  <style>
+    :root, [data-theme="dark"] {
+      --bg: #1e1e2e;
+      --surface: #313244;
+      --text: #cdd6f4;
+      --muted: #6c7086;
+      --accent: #89b4fa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+    .container {
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      padding: 40px 20px;
+    }
+    .logo {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .search-box {
+      width: 100%;
+      padding: 14px 48px 14px 20px;
+      background: var(--surface);
+      border: 2px solid transparent;
+      border-radius: 28px;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.15);
+    }
+    .search-box::placeholder {
+      color: var(--muted);
+    }
+    .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .engine-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 12px;
+      padding: 4px 12px;
+      background: var(--surface);
+      border-radius: 12px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🛡️</div>
+    <div class="title">PrivBrowser</div>
+    <div class="subtitle">隐私优先，安全浏览</div>
+    <div class="search-wrapper">
+      <input
+        class="search-box"
+        type="text"
+        id="searchInput"
+        placeholder="搜索网页或输入网址"
+        autofocus
+        spellcheck="false"
+      />
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="engine-badge" id="engineBadge">🔍 Google</div>
+  </div>
+
+  <script>
+    const SEARCH_ENGINES = {
+      google:     { name: 'Google',     url: 'https://www.google.com/search?q=%s',     icon: '🔍' },
+      duckduckgo: { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=%s',          icon: '🦆' },
+      bing:       { name: 'Bing',       url: 'https://www.bing.com/search?q=%s',       icon: '🔵' },
+      baidu:      { name: 'Baidu',      url: 'https://www.baidu.com/s?wd=%s',          icon: '🐾' },
+      searxng:    { name: 'SearXNG',    url: 'http://localhost:8080/search?q=%s',      icon: '🧅' },
+    };
+
+    let currentEngine = 'google';
+
+    function isUrlLike(input) {
+      if (/^(https?:\/\/|about:|ftp:\/\/|file:\/\/)/.test(input)) return true;
+      if (/^[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z0-9][-a-zA-Z0-9]*)+(\/[^\s]*)?$/.test(input)) return true;
+      if (/^localhost(:\d+)?(\/[^\s]*)?$/.test(input)) return true;
+      return false;
+    }
+
+    function navigate(input) {
+      var url;
+      if (isUrlLike(input)) {
+        url = /^https?:\/\//.test(input) ? input : 'https://' + input;
+      } else {
+        url = SEARCH_ENGINES[currentEngine].url.replace('%s', encodeURIComponent(input));
+      }
+      window.location.href = url;
+    }
+
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        navigate(this.value.trim());
+      }
+    });
+
+    // Listen for engine changes from parent (if any)
+    try {
+      window.addEventListener('message', function(e) {
+        if (e.data && e.data.type === 'setEngine') {
+          currentEngine = e.data.engine;
+          var eng = SEARCH_ENGINES[currentEngine];
+          document.getElementById('engineBadge').textContent = eng.icon + ' ' + eng.name;
+        }
+      });
+    } catch(e) {}
+  </script>
+</body>
+</html>
