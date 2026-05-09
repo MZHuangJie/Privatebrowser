@@ -48,7 +48,7 @@ const api = {
   bookmarks: {
     get: (): Promise<{ title: string; url: string }[]> =>
       ipcRenderer.invoke('bookmarks:get'),
-    add: (bookmark: { title: string; url: string }) =>
+    add: (bookmark: { title: string; url: string; folder?: string; showInBar?: boolean }) =>
       ipcRenderer.invoke('bookmarks:add', bookmark),
     remove: (url: string) =>
       ipcRenderer.invoke('bookmarks:remove', url),

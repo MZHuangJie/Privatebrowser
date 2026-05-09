@@ -70,12 +70,21 @@ export function registerIpcHandlers(
     return storeManager.getBookmarks();
   });
 
-  ipcMain.handle('bookmarks:add', (_e, bookmark: { title: string; url: string }) => {
+  ipcMain.handle('bookmarks:add', (_e, bookmark: { title: string; url: string; folder?: string; showInBar?: boolean }) => {
     const bookmarks = storeManager.getBookmarks();
-    if (!bookmarks.some((b) => b.url === bookmark.url)) {
-      bookmarks.push(bookmark);
-      storeManager.setBookmarks(bookmarks);
+    const idx = bookmarks.findIndex((b) => b.url === bookmark.url);
+    const entry = {
+      title: bookmark.title,
+      url: bookmark.url,
+      folder: bookmark.folder || '',
+      showInBar: bookmark.showInBar ?? false,
+    };
+    if (idx >= 0) {
+      bookmarks[idx] = entry;
+    } else {
+      bookmarks.push(entry);
     }
+    storeManager.setBookmarks(bookmarks);
     return bookmarks;
   });
 

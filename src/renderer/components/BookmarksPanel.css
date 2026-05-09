@@ -50,6 +50,15 @@
   font-size: 13px;
 }
 
+.bookmark-folder-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 12px 4px;
+}
+
 .bookmark-item {
   display: flex;
   align-items: center;

@@ -7,8 +7,8 @@ import StatusBar from './components/StatusBar';
 import SettingsPanel from './components/SettingsPanel';
 import NewTabPage from './components/NewTabPage';
 import BookmarksPanel from './components/BookmarksPanel';
-
-interface Bookmark { title: string; url: string; }
+import BookmarksBar from './components/BookmarksBar';
+import BookmarkEditDialog, { Bookmark } from './components/BookmarkEditDialog';
 
 export default function App() {
   const [tabs, setTabs] = useState<TabState[]>([]);
@@ -16,6 +16,7 @@ export default function App() {
   const [settings, setSettings] = useState<BrowserSettings>(DEFAULT_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
   const [showBookmarks, setShowBookmarks] = useState(false);
+  const [showBookmarkEdit, setShowBookmarkEdit] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [theme, setTheme] = useState<ThemeMode>('dark');
 
@@ -104,21 +105,33 @@ export default function App() {
     await window.privbrowser.nav.go(tabId, finalUrl);
   }, [activeTabId, settings.searchEngine]);
 
-  const isBookmarked = activeTab?.url ? bookmarks.some((b) => b.url === activeTab.url) : false;
+  const existingBookmark = activeTab?.url ? bookmarks.find((b) => b.url === activeTab.url) : null;
+  const isBookmarked = !!existingBookmark;
 
-  const handleToggleBookmark = useCallback(async () => {
+  const handleToggleBookmark = useCallback(() => {
     if (!activeTab?.url || activeTab.url === 'about:blank') return;
-    if (isBookmarked) {
+    setShowBookmarkEdit(true);
+  }, [activeTab]);
+
+  const folders = [...new Set(bookmarks.map((b) => b.folder).filter(Boolean))] as string[];
+
+  const handleSaveBookmark = useCallback(async (bm: Bookmark) => {
+    if (existingBookmark) {
+      await window.privbrowser.bookmarks.remove(activeTab!.url);
+    }
+    await window.privbrowser.bookmarks.add(bm);
+    const updated = await window.privbrowser.bookmarks.get();
+    setBookmarks(updated);
+    setShowBookmarkEdit(false);
+  }, [existingBookmark, activeTab]);
+
+  const handleDeleteBookmark = useCallback(async () => {
+    if (activeTab?.url) {
       const updated = await window.privbrowser.bookmarks.remove(activeTab.url);
       setBookmarks(updated);
-    } else {
-      const updated = await window.privbrowser.bookmarks.add({
-        title: activeTab.title || activeTab.url,
-        url: activeTab.url,
-      });
-      setBookmarks(updated);
     }
-  }, [activeTab, isBookmarked]);
+    setShowBookmarkEdit(false);
+  }, [activeTab]);
 
   const handleRemoveBookmark = useCallback(async (url: string) => {
     const updated = await window.privbrowser.bookmarks.remove(url);
@@ -170,6 +183,7 @@ export default function App() {
         onNavigate={handleNavigate}
         onToggleBookmark={handleToggleBookmark}
       />
+      <BookmarksBar bookmarks={bookmarks} onNavigate={handleNavigate} />
       <TabBar
         tabs={tabs}
         activeTabId={activeTabId}
@@ -212,6 +226,19 @@ export default function App() {
             window.privbrowser.tabs.showActive();
             setShowBookmarks(false);
           }}
+        />
+      )}
+      {showBookmarkEdit && activeTab && (
+        <BookmarkEditDialog
+          title={existingBookmark?.title || activeTab.title || activeTab.url || ''}
+          url={activeTab.url || ''}
+          folders={folders}
+          initialFolder={existingBookmark?.folder || ''}
+          initialShowInBar={existingBookmark?.showInBar ?? false}
+          onSave={handleSaveBookmark}
+          onRemove={handleDeleteBookmark}
+          onClose={() => setShowBookmarkEdit(false)}
+          isExisting={isBookmarked}
         />
       )}
     </div>
