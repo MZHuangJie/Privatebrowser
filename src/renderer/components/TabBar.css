@@ -12,10 +12,7 @@
   flex: 1;
   gap: 2px;
   overflow-x: auto;
-  scrollbar-width: none;
 }
-
-.tab-list::-webkit-scrollbar { display: none; }
 
 .tab {
   display: flex;
@@ -29,7 +26,7 @@
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
-  min-width: 0;
+  flex-shrink: 0;
   transition: background 0.15s;
 }
 
