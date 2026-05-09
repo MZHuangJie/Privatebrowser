@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { TabState, BrowserSettings, DEFAULT_SETTINGS, ThemeMode, SEARCH_ENGINES } from '../shared/types';
+import { TabState, BrowserSettings, DEFAULT_SETTINGS, ThemeMode, SEARCH_ENGINES, FONT_FAMILIES } from '../shared/types';
 import TabBar from './components/TabBar';
 import AddressBar from './components/AddressBar';
 import ToolBar from './components/ToolBar';
@@ -28,6 +28,7 @@ export default function App() {
     window.privbrowser.settings.get().then((s) => {
       setSettings(s);
       applyTheme(s.theme);
+      document.documentElement.style.setProperty('--font-family', FONT_FAMILIES[s.font].css);
     });
     window.privbrowser.bookmarks.get().then(setBookmarks);
     window.privbrowser.tabs.onUpdate((updated) => {
@@ -145,6 +146,7 @@ export default function App() {
     const updated = await window.privbrowser.settings.set(partial);
     setSettings(updated);
     if (partial.theme) applyTheme(partial.theme);
+    if (partial.font) document.documentElement.style.setProperty('--font-family', FONT_FAMILIES[partial.font].css);
   }, [applyTheme]);
 
   return (

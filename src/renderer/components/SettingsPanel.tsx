@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserSettings, PrivacyLevel, SearchEngine, ThemeMode, SEARCH_ENGINES } from '../../shared/types';
+import { BrowserSettings, PrivacyLevel, SearchEngine, ThemeMode, FontFamily, SEARCH_ENGINES, FONT_FAMILIES } from '../../shared/types';
 import './SettingsPanel.css';
 
 interface Props {
@@ -72,6 +72,19 @@ export default function SettingsPanel({ settings, onChange, onClose }: Props) {
                 </label>
               ))}
             </div>
+          </div>
+
+          <div className="settings-group">
+            <label className="settings-label">字体</label>
+            <select
+              className="settings-select"
+              value={settings.font}
+              onChange={(e) => onChange({ font: e.target.value as FontFamily })}
+            >
+              {Object.entries(FONT_FAMILIES).map(([key, def]) => (
+                <option key={key} value={key}>{def.name}</option>
+              ))}
+            </select>
           </div>
 
           <div className="settings-group">

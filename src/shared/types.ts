@@ -15,6 +15,17 @@ export type PrivacyLevel = 'strict' | 'balanced' | 'relaxed';
 
 export type ThemeMode = 'dark' | 'light' | 'midnight' | 'forest' | 'sunset' | 'ocean' | 'lavender' | 'system';
 
+export type FontFamily = 'default' | 'song' | 'kai' | 'hei' | 'mono' | 'round';
+
+export const FONT_FAMILIES: Record<FontFamily, { name: string; css: string }> = {
+  default: { name: '系统默认', css: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' },
+  song:    { name: '宋体',     css: '"SimSun", "宋体", serif' },
+  kai:     { name: '楷体',     css: '"KaiTi", "楷体", serif' },
+  hei:     { name: '黑体',     css: '"SimHei", "黑体", "PingFang SC", sans-serif' },
+  mono:    { name: '等宽',     css: '"SF Mono", "Cascadia Code", "Consolas", monospace' },
+  round:   { name: '圆体',     css: '"PingFang SC", "Microsoft YaHei", "微软雅黑", sans-serif' },
+};
+
 export type SearchEngine = 'google' | 'duckduckgo' | 'bing' | 'baidu' | 'searxng';
 
 export interface SearchEngineDef {
@@ -41,6 +52,7 @@ export interface BrowserSettings {
   blockTrackers: boolean;
   blockFingerprinting: boolean;
   httpsOnly: boolean;
+  font: FontFamily;
   maxActiveTabs: number;
   whitelist: string[];
 }
@@ -55,6 +67,7 @@ export const DEFAULT_SETTINGS: BrowserSettings = {
   blockTrackers: true,
   blockFingerprinting: true,
   httpsOnly: true,
+  font: 'default',
   maxActiveTabs: 5,
   whitelist: [],
 };
