@@ -23,7 +23,7 @@ export default function ToolBar({
         <button className="tool-btn" onClick={onForward} disabled={!canGoForward} title="Forward">→</button>
         <button className="tool-btn" onClick={onReload} title="Reload">↻</button>
       </div>
-      <div className="toolbar-title">PrivBrowser</div>
+      <div className="toolbar-title">SafeView</div>
       <div className="toolbar-actions">
         <button className="tool-btn" onClick={onToggleTheme} title="Toggle theme">
           {theme === 'dark' ? '☀️' : '🌙'}

@@ -1,5 +1,5 @@
 {
-  "name": "privbrowser",
+  "name": "safeview",
   "version": "0.1.0",
   "description": "Privacy-first desktop browser",
   "main": "dist/main/main/index.js",

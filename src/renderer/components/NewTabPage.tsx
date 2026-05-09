@@ -19,7 +19,7 @@ export default function NewTabPage({ onNavigate, searchEngine }: Props) {
     <div className="newtab">
       <div className="newtab-content">
         <div className="newtab-logo">🛡️</div>
-        <h1 className="newtab-title">PrivBrowser</h1>
+        <h1 className="newtab-title">SafeView</h1>
         <p className="newtab-subtitle">隐私优先，安全浏览</p>
         <form className="newtab-search-wrapper" onSubmit={handleSubmit}>
           <input

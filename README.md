@@ -1,4 +1,4 @@
-# PrivBrowser
+# SafeView
 
 Privacy-first desktop browser built with Electron + React + TypeScript.
 

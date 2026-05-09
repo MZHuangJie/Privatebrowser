@@ -1,5 +1,5 @@
-appId: com.privbrowser.app
-productName: PrivBrowser
+appId: com.safeview.app
+productName: SafeView
 directories:
   output: release
   buildResources: build
