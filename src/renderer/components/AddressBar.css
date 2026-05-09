@@ -1,0 +1,45 @@
+.address-bar {
+  padding: 6px 10px;
+  background: var(--bg-secondary);
+  -webkit-app-region: no-drag;
+}
+
+.address-form {
+  display: flex;
+  align-items: center;
+  background: var(--bg-tertiary);
+  border-radius: 20px;
+  padding: 4px 14px;
+  gap: 8px;
+}
+
+.address-lock { font-size: 12px; flex-shrink: 0; }
+
+.address-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  font-family: inherit;
+}
+
+.address-input::placeholder { color: var(--text-muted); }
+
+.address-spinner {
+  font-size: 14px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.address-blocked {
+  background: var(--accent-green);
+  color: var(--bg-primary);
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
