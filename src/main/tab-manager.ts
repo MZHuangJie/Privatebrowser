@@ -1,12 +1,11 @@
 import { BrowserView, BrowserWindow, session } from 'electron';
 import { v4 as uuidv4 } from 'uuid';
-import * as path from 'path';
 import { TabState, BrowserSettings } from '../shared/types';
 import { PrivacyEngine } from './privacy-engine';
 
 interface TabEntry {
   state: TabState;
-  view: BrowserView;
+  view: BrowserView | null;
   ses: Electron.Session;
 }
 
@@ -16,13 +15,11 @@ export class TabManager {
   private window: BrowserWindow;
   private privacyEngine: PrivacyEngine;
   private settings: BrowserSettings;
-  private newTabUrl: string;
 
   constructor(window: BrowserWindow, privacyEngine: PrivacyEngine, settings: BrowserSettings) {
     this.window = window;
     this.privacyEngine = privacyEngine;
     this.settings = settings;
-    this.newTabUrl = `file://${path.join(__dirname, '..', '..', 'renderer', 'newtab.html')}`;
   }
 
   createTab(url?: string): TabState {
@@ -30,9 +27,41 @@ export class TabManager {
     const partitionKey = `persist:tab-${id}`;
     const ses = session.fromPartition(partitionKey);
 
+    this.privacyEngine.attachToSession(ses, id);
+
+    const newTab: TabState = {
+      id,
+      url: url || '',
+      title: 'New Tab',
+      isLoading: false,
+      canGoBack: false,
+      canGoForward: false,
+      blockedCount: 0,
+      isPinned: false,
+      partitionKey,
+    };
+
+    const entry: TabEntry = { state: newTab, view: null, ses };
+    this.tabs.set(id, entry);
+
+    if (url) {
+      this.ensureView(entry);
+      this.navigate(id, url);
+      this.switchTab(id);
+    } else {
+      this.switchTab(id);
+      this.notifyTabUpdate(id);
+    }
+
+    return newTab;
+  }
+
+  private ensureView(entry: TabEntry): void {
+    if (entry.view) return;
+
     const view = new BrowserView({
       webPreferences: {
-        partition: partitionKey,
+        partition: entry.state.partitionKey,
         nodeIntegration: false,
         contextIsolation: true,
         sandbox: true,
@@ -41,32 +70,8 @@ export class TabManager {
       },
     });
 
-    this.privacyEngine.attachToSession(ses, id);
-
-    const newTab: TabState = {
-      id,
-      url: url || this.newTabUrl,
-      title: 'New Tab',
-      isLoading: true,
-      canGoBack: false,
-      canGoForward: false,
-      blockedCount: 0,
-      isPinned: false,
-      partitionKey,
-    };
-
-    const entry: TabEntry = { state: newTab, view, ses };
-    this.tabs.set(id, entry);
-
-    this.setupViewEvents(view, id);
-
-    this.navigate(id, url || this.newTabUrl);
-
-    this.window.addBrowserView(view);
-    this.setBounds(view);
-    this.switchTab(id);
-
-    return newTab;
+    entry.view = view;
+    this.setupViewEvents(view, entry.state.id);
   }
 
   private setupViewEvents(view: BrowserView, tabId: string): void {
@@ -124,6 +129,10 @@ export class TabManager {
 
   private recreateView(entry: TabEntry): void {
     const oldView = entry.view;
+    if (oldView) {
+      this.window.removeBrowserView(oldView);
+      (oldView as any).webContents.destroy?.();
+    }
     const newView = new BrowserView({
       webPreferences: {
         partition: entry.state.partitionKey,
@@ -133,8 +142,6 @@ export class TabManager {
         webSecurity: true,
       },
     });
-    this.window.removeBrowserView(oldView);
-    (oldView as any).webContents.destroy?.();
     entry.view = newView;
     this.setupViewEvents(newView, entry.state.id);
     newView.webContents.loadURL(entry.state.url);
@@ -150,14 +157,16 @@ export class TabManager {
   switchTab(tabId: string): void {
     if (this.activeTabId === tabId) return;
     const prevEntry = this.activeTabId ? this.tabs.get(this.activeTabId) : null;
-    if (prevEntry) this.setViewHidden(prevEntry.view);
+    if (prevEntry && prevEntry.view) this.setViewHidden(prevEntry.view);
 
     const entry = this.tabs.get(tabId);
     if (!entry) return;
 
     this.activeTabId = tabId;
-    this.setViewVisible(entry.view);
-    this.setBounds(entry.view);
+    if (entry.view) {
+      this.setViewVisible(entry.view);
+      this.setBounds(entry.view);
+    }
     this.notifyTabUpdate(tabId);
   }
 
@@ -169,8 +178,10 @@ export class TabManager {
       this.clearPartitionData(entry);
     }
 
-    this.window.removeBrowserView(entry.view);
-    (entry.view as any).webContents.destroy?.();
+    if (entry.view) {
+      this.window.removeBrowserView(entry.view);
+      (entry.view as any).webContents.destroy?.();
+    }
 
     this.tabs.delete(tabId);
 
@@ -204,26 +215,34 @@ export class TabManager {
 
     const url = this.privacyEngine.autoUpgradeHttps(rawUrl);
     entry.state.url = url;
-    entry.view.webContents.loadURL(url);
+    entry.state.isLoading = true;
+
+    this.ensureView(entry);
+    this.window.addBrowserView(entry.view!);
+    this.setBounds(entry.view!);
+    this.switchTab(tabId);
+
+    entry.view!.webContents.loadURL(url);
+    this.notifyTabUpdate(tabId);
   }
 
   goBack(tabId: string): void {
     const entry = this.tabs.get(tabId);
-    if (entry && entry.view.webContents.canGoBack()) {
+    if (entry?.view?.webContents.canGoBack()) {
       entry.view.webContents.goBack();
     }
   }
 
   goForward(tabId: string): void {
     const entry = this.tabs.get(tabId);
-    if (entry && entry.view.webContents.canGoForward()) {
+    if (entry?.view?.webContents.canGoForward()) {
       entry.view.webContents.goForward();
     }
   }
 
   reload(tabId: string): void {
     const entry = this.tabs.get(tabId);
-    if (entry) entry.view.webContents.reload();
+    if (entry?.view) entry.view.webContents.reload();
   }
 
   togglePin(tabId: string): void {
@@ -260,9 +279,11 @@ export class TabManager {
       } else if (activeCount < maxActive) {
         activeCount++;
       } else {
-        this.window.removeBrowserView(entry.view);
-        (entry.view as any).webContents.destroy?.();
-        entry.view = null!;
+        if (entry.view) {
+          this.window.removeBrowserView(entry.view);
+          (entry.view as any).webContents.destroy?.();
+          entry.view = null;
+        }
       }
     }
   }
@@ -304,14 +325,14 @@ export class TabManager {
   hideActiveView(): void {
     if (this.activeTabId) {
       const entry = this.tabs.get(this.activeTabId);
-      if (entry) this.setViewHidden(entry.view);
+      if (entry?.view) this.setViewHidden(entry.view);
     }
   }
 
   showActiveView(): void {
     if (this.activeTabId) {
       const entry = this.tabs.get(this.activeTabId);
-      if (entry) {
+      if (entry?.view) {
         this.setViewVisible(entry.view);
         this.setBounds(entry.view);
       }

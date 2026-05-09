@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { TabState, BrowserSettings, DEFAULT_SETTINGS, ThemeMode } from '../shared/types';
+import { TabState, BrowserSettings, DEFAULT_SETTINGS, ThemeMode, SEARCH_ENGINES } from '../shared/types';
 import TabBar from './components/TabBar';
 import AddressBar from './components/AddressBar';
 import ToolBar from './components/ToolBar';
 import StatusBar from './components/StatusBar';
 import SettingsPanel from './components/SettingsPanel';
+import NewTabPage from './components/NewTabPage';
 
 export default function App() {
   const [tabs, setTabs] = useState<TabState[]>([]);
@@ -129,6 +130,12 @@ export default function App() {
         onCreate={() => handleCreateTab()}
         onPin={(tabId) => window.privbrowser.tabs.pin(tabId)}
       />
+      {(!activeTab || !activeTab.url) ? (
+        <NewTabPage
+          onNavigate={handleNavigate}
+          searchEngine={SEARCH_ENGINES[settings.searchEngine].icon + ' ' + SEARCH_ENGINES[settings.searchEngine].name}
+        />
+      ) : null}
       <StatusBar
         privacyLevel={settings.privacyLevel}
         searchEngine={settings.searchEngine}

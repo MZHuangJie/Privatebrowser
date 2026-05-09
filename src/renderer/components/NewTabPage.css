@@ -1,0 +1,79 @@
+.newtab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+}
+
+.newtab-content {
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+  padding: 40px 20px 80px;
+}
+
+.newtab-logo {
+  font-size: 56px;
+  margin-bottom: 8px;
+}
+
+.newtab-title {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 4px;
+}
+
+.newtab-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+}
+
+.newtab-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.newtab-search {
+  width: 100%;
+  padding: 14px 52px 14px 22px;
+  background: var(--bg-tertiary);
+  border: 2px solid transparent;
+  border-radius: 28px;
+  color: var(--text-primary);
+  font-size: 17px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.newtab-search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(137, 180, 250, 0.12);
+}
+
+.newtab-search::placeholder {
+  color: var(--text-muted);
+}
+
+.newtab-search-icon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.newtab-engine {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 4px 14px;
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
