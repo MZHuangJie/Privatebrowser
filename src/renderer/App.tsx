@@ -54,10 +54,22 @@ export default function App() {
     setActiveTabId(tabId);
   }, []);
 
+  const isUrlLike = (input: string): boolean => {
+    if (/^(https?:\/\/|about:|ftp:\/\/|file:\/\/)/.test(input)) return true;
+    // Domain-like: contains a dot, no spaces, looks like example.com or www.example.com
+    if (/^[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z0-9][-a-zA-Z0-9]*)+(\/[^\s]*)?$/.test(input)) return true;
+    if (/^localhost(:\d+)?(\/[^\s]*)?$/.test(input)) return true;
+    return false;
+  };
+
   const handleNavigate = useCallback(async (url: string) => {
     if (!activeTabId) return;
     let finalUrl = url;
-    if (!/^(https?:\/\/|about:)/.test(url)) {
+    if (isUrlLike(url)) {
+      if (!/^(https?:\/\/|about:)/.test(url)) {
+        finalUrl = 'https://' + url;
+      }
+    } else {
       const searchUrls: Record<string, string> = {
         google: 'https://www.google.com/search?q=',
         duckduckgo: 'https://duckduckgo.com/?q=',
@@ -89,7 +101,13 @@ export default function App() {
           const next = theme === 'dark' ? 'light' : 'dark';
           handleSettingsChange({ theme: next as ThemeMode });
         }}
-        onOpenSettings={() => setShowSettings((v) => !v)}
+        onOpenSettings={() => {
+          setShowSettings((v) => {
+            if (!v) window.privbrowser.tabs.hideActive();
+            else window.privbrowser.tabs.showActive();
+            return !v;
+          });
+        }}
       />
       <AddressBar
         url={activeTab?.url ?? ''}
@@ -114,7 +132,10 @@ export default function App() {
         <SettingsPanel
           settings={settings}
           onChange={handleSettingsChange}
-          onClose={() => setShowSettings(false)}
+          onClose={() => {
+            window.privbrowser.tabs.showActive();
+            setShowSettings(false);
+          }}
         />
       )}
     </div>

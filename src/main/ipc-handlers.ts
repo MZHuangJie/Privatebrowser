@@ -43,6 +43,14 @@ export function registerIpcHandlers(
     return tabManager.getAllTabs();
   });
 
+  ipcMain.handle('tab:hideActive', () => {
+    tabManager.hideActiveView();
+  });
+
+  ipcMain.handle('tab:showActive', () => {
+    tabManager.showActiveView();
+  });
+
   ipcMain.handle('settings:get', () => {
     return storeManager.getSettings();
   });

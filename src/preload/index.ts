@@ -8,6 +8,8 @@ const api = {
     switch: (tabId: string): Promise<void> => ipcRenderer.invoke('tab:switch', tabId),
     pin: (tabId: string): Promise<void> => ipcRenderer.invoke('tab:pin', tabId),
     getAll: (): Promise<TabState[]> => ipcRenderer.invoke('tabs:getAll'),
+    hideActive: (): Promise<void> => ipcRenderer.invoke('tab:hideActive'),
+    showActive: (): Promise<void> => ipcRenderer.invoke('tab:showActive'),
     onUpdate: (callback: (tab: TabState) => void) => {
       ipcRenderer.on('tab:updated', (_e, tab: TabState) => callback(tab));
       return () => {

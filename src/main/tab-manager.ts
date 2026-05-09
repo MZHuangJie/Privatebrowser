@@ -295,6 +295,23 @@ export class TabManager {
     return this.activeTabId;
   }
 
+  hideActiveView(): void {
+    if (this.activeTabId) {
+      const entry = this.tabs.get(this.activeTabId);
+      if (entry) this.setViewHidden(entry.view);
+    }
+  }
+
+  showActiveView(): void {
+    if (this.activeTabId) {
+      const entry = this.tabs.get(this.activeTabId);
+      if (entry) {
+        this.setViewVisible(entry.view);
+        this.setBounds(entry.view);
+      }
+    }
+  }
+
   updateSettings(settings: BrowserSettings): void {
     this.settings = settings;
     this.privacyEngine.updateSettings(settings);
