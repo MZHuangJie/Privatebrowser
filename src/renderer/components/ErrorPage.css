@@ -1,0 +1,28 @@
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.error-icon { font-size: 48px; }
+.error-code { font-size: 20px; font-weight: 600; }
+.error-desc { font-size: 14px; color: var(--text-secondary); }
+
+.error-retry {
+  margin-top: 8px;
+  padding: 8px 24px;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.error-retry:hover { opacity: 0.9; }
