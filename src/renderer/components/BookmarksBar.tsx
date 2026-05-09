@@ -9,7 +9,6 @@ interface Props {
 
 export default function BookmarksBar({ bookmarks, onNavigate }: Props) {
   const visible = bookmarks.filter((b) => b.showInBar);
-  if (visible.length === 0) return null;
 
   const byFolder = new Map<string, Bookmark[]>();
   for (const b of visible) {

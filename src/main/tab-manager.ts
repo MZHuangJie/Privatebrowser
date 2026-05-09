@@ -308,16 +308,16 @@ export class TabManager {
     const contentBounds = this.window.getContentBounds();
     view.setBounds({
       x: 0,
-      y: 108,
+      y: 134,
       width: contentBounds.width,
-      height: contentBounds.height - 132,
+      height: contentBounds.height - 158,
     });
   }
 
   private setViewVisible(view: BrowserView): void {
     view.setBounds({
       x: 0,
-      y: 108,
+      y: 134,
       width: this.window.getContentBounds().width,
       height: this.window.getContentBounds().height - 104,
     });
