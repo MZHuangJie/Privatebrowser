@@ -110,6 +110,7 @@ export default function App() {
 
   const handleToggleBookmark = useCallback(() => {
     if (!activeTab?.url || activeTab.url === 'about:blank') return;
+    window.privbrowser.tabs.hideActive();
     setShowBookmarkEdit(true);
   }, [activeTab]);
 
@@ -123,6 +124,7 @@ export default function App() {
     const updated = await window.privbrowser.bookmarks.get();
     setBookmarks(updated);
     setShowBookmarkEdit(false);
+    window.privbrowser.tabs.showActive();
   }, [existingBookmark, activeTab]);
 
   const handleDeleteBookmark = useCallback(async () => {
@@ -131,6 +133,7 @@ export default function App() {
       setBookmarks(updated);
     }
     setShowBookmarkEdit(false);
+    window.privbrowser.tabs.showActive();
   }, [activeTab]);
 
   const handleRemoveBookmark = useCallback(async (url: string) => {
