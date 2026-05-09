@@ -36,7 +36,9 @@ const WebViewComponent = React.forwardRef<WebViewHandle, Props>(function WebView
 
     const wv = document.createElement('webview') as any;
     wv.setAttribute('partition', partition);
-    wv.setAttribute('src', src || 'about:blank');
+    if (src) {
+      wv.setAttribute('src', src);
+    }
     wv.setAttribute('allowpopups', '');
     wv.style.width = '100%';
     wv.style.height = '100%';
