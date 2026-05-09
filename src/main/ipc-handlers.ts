@@ -40,6 +40,10 @@ export function registerIpcHandlers(
     tabManager.reload(tabId);
   });
 
+  ipcMain.handle('nav:stop', (_e, tabId: string) => {
+    tabManager.stopLoading(tabId);
+  });
+
   ipcMain.handle('tabs:getAll', () => {
     return tabManager.getAllTabs();
   });

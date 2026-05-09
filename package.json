@@ -5,7 +5,7 @@
   "main": "dist/main/main/index.js",
   "scripts": {
     "dev": "concurrently \"vite\" \"tsc -p tsconfig.main.json --watch\" \"tsc -p tsconfig.preload.json --watch\"",
-    "build": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && vite build && node -e \"require('fs').cpSync('src/renderer/newtab.html','dist/renderer/newtab.html')\"",
+    "build": "tsc -p tsconfig.main.json && tsc -p tsconfig.preload.json && vite build",
     "start": "electron .",
     "test": "vitest run",
     "pack": "electron-builder --dir",

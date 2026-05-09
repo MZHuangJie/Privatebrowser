@@ -256,6 +256,11 @@ export class TabManager {
     if (entry?.view) entry.view.webContents.reload();
   }
 
+  stopLoading(tabId: string): void {
+    const entry = this.tabs.get(tabId);
+    if (entry?.view) entry.view.webContents.stop();
+  }
+
   togglePin(tabId: string): void {
     const entry = this.tabs.get(tabId);
     if (entry) {

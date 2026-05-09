@@ -4,8 +4,10 @@ import './ToolBar.css';
 interface Props {
   canGoBack: boolean;
   canGoForward: boolean;
+  isLoading: boolean;
   onBack: () => void;
   onForward: () => void;
+  onStop: () => void;
   onReload: () => void;
   theme: string;
   onToggleTheme: () => void;
@@ -13,7 +15,7 @@ interface Props {
 }
 
 export default function ToolBar({
-  canGoBack, canGoForward, onBack, onForward, onReload,
+  canGoBack, canGoForward, isLoading, onBack, onForward, onStop, onReload,
   theme, onToggleTheme, onOpenSettings,
 }: Props) {
   return (
@@ -21,7 +23,11 @@ export default function ToolBar({
       <div className="toolbar-nav">
         <button className="tool-btn" onClick={onBack} disabled={!canGoBack} title="Back">←</button>
         <button className="tool-btn" onClick={onForward} disabled={!canGoForward} title="Forward">→</button>
-        <button className="tool-btn" onClick={onReload} title="Reload">↻</button>
+        {isLoading ? (
+          <button className="tool-btn" onClick={onStop} title="Stop">✕</button>
+        ) : (
+          <button className="tool-btn" onClick={onReload} title="Reload">↻</button>
+        )}
       </div>
       <div className="toolbar-title">SafeView</div>
       <div className="toolbar-actions">

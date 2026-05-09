@@ -30,6 +30,7 @@ const api = {
     back: (tabId: string): Promise<void> => ipcRenderer.invoke('nav:back', tabId),
     forward: (tabId: string): Promise<void> => ipcRenderer.invoke('nav:forward', tabId),
     reload: (tabId: string): Promise<void> => ipcRenderer.invoke('nav:reload', tabId),
+    stop: (tabId: string): Promise<void> => ipcRenderer.invoke('nav:stop', tabId),
   },
 
   settings: {

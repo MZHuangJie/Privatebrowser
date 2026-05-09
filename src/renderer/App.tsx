@@ -109,8 +109,10 @@ export default function App() {
       <ToolBar
         canGoBack={activeTab?.canGoBack ?? false}
         canGoForward={activeTab?.canGoForward ?? false}
+        isLoading={activeTab?.isLoading ?? false}
         onBack={() => activeTabId && window.privbrowser.nav.back(activeTabId)}
         onForward={() => activeTabId && window.privbrowser.nav.forward(activeTabId)}
+        onStop={() => activeTabId && window.privbrowser.nav.stop(activeTabId)}
         onReload={() => activeTabId && window.privbrowser.nav.reload(activeTabId)}
         theme={theme}
         onToggleTheme={() => {
