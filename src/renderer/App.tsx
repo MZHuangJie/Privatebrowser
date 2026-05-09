@@ -24,6 +24,13 @@ export default function App() {
     window.privbrowser.tabs.onUpdate((updated) => {
       setTabs((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
     });
+    window.privbrowser.tabs.onCreated((created) => {
+      setTabs((prev) => {
+        if (prev.some((t) => t.id === created.id)) return prev;
+        return [...prev, created];
+      });
+      setActiveTabId(created.id);
+    });
   }, []);
 
   const applyTheme = useCallback((mode: ThemeMode) => {

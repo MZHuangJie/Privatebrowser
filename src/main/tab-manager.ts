@@ -53,6 +53,7 @@ export class TabManager {
       this.notifyTabUpdate(id);
     }
 
+    this.notifyTabCreated(id);
     return newTab;
   }
 
@@ -302,16 +303,16 @@ export class TabManager {
     const contentBounds = this.window.getContentBounds();
     view.setBounds({
       x: 0,
-      y: 80,
+      y: 108,
       width: contentBounds.width,
-      height: contentBounds.height - 104,
+      height: contentBounds.height - 132,
     });
   }
 
   private setViewVisible(view: BrowserView): void {
     view.setBounds({
       x: 0,
-      y: 80,
+      y: 108,
       width: this.window.getContentBounds().width,
       height: this.window.getContentBounds().height - 104,
     });
@@ -325,6 +326,13 @@ export class TabManager {
     const state = this.getTabState(tabId);
     if (state) {
       this.window.webContents.send('tab:updated', state);
+    }
+  }
+
+  private notifyTabCreated(tabId: string): void {
+    const state = this.getTabState(tabId);
+    if (state) {
+      this.window.webContents.send('tab:created', state);
     }
   }
 

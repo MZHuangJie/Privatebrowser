@@ -16,6 +16,12 @@ const api = {
         ipcRenderer.removeAllListeners('tab:updated');
       };
     },
+    onCreated: (callback: (tab: TabState) => void) => {
+      ipcRenderer.on('tab:created', (_e, tab: TabState) => callback(tab));
+      return () => {
+        ipcRenderer.removeAllListeners('tab:created');
+      };
+    },
   },
 
   nav: {
