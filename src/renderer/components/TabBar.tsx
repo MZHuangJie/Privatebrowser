@@ -31,8 +31,10 @@ export default function TabBar({ tabs, activeTabId, onSwitch, onClose, onCreate,
             onContextMenu={(e) => handleContextMenu(e, tab.id)}
             onAuxClick={(e) => { if (e.button === 1) onClose(tab.id); }}
           >
-            <span className="tab-icon">{tab.isPinned ? '📌' : tab.isLoading ? '⏳' : '🌐'}</span>
-            <span className="tab-title">{tab.title.slice(0, 30)}</span>
+            <span className="tab-icon">
+              {tab.isPinned ? '📌' : tab.favicon ? <img className="tab-favicon" src={tab.favicon} alt="" /> : tab.isLoading ? '⏳' : '🌐'}
+            </span>
+            <span className="tab-title">{tab.title.slice(0, 40)}</span>
             {!tab.isPinned && (
               <button
                 className="tab-close"

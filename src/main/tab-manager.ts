@@ -33,6 +33,7 @@ export class TabManager {
       id,
       url: url || '',
       title: 'New Tab',
+      favicon: '',
       isLoading: false,
       canGoBack: false,
       canGoForward: false,
@@ -88,7 +89,15 @@ export class TabManager {
     wc.on('page-title-updated', (_e, title) => {
       const entry = this.tabs.get(tabId);
       if (entry) {
-        entry.state.title = title;
+        entry.state.title = title || entry.state.title;
+        this.notifyTabUpdate(tabId);
+      }
+    });
+
+    wc.on('page-favicon-updated', (_e, favicons) => {
+      const entry = this.tabs.get(tabId);
+      if (entry && favicons.length > 0) {
+        entry.state.favicon = favicons[0];
         this.notifyTabUpdate(tabId);
       }
     });
@@ -106,6 +115,7 @@ export class TabManager {
       if (entry) {
         entry.state.isLoading = false;
         entry.state.url = wc.getURL();
+        entry.state.title = wc.getTitle() || entry.state.title || entry.state.url;
         entry.state.canGoBack = wc.canGoBack();
         entry.state.canGoForward = wc.canGoForward();
         this.notifyTabUpdate(tabId);
