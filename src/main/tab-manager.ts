@@ -74,6 +74,11 @@ export class TabManager {
 
     this.privacyEngine.injectFingerprintProtection(wc);
 
+    wc.setWindowOpenHandler(({ url }) => {
+      this.createTab(url);
+      return { action: 'deny' };
+    });
+
     wc.on('page-title-updated', (_e, title) => {
       const entry = this.tabs.get(tabId);
       if (entry) {
