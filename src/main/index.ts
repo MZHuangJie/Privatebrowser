@@ -12,6 +12,7 @@ function createWindow(): void {
   const storeManager = new StoreManager();
   const settings = storeManager.getSettings();
   const privacyEngine = new PrivacyEngine(settings);
+  tabManager = new TabManager(privacyEngine);
 
   mainWindow = new BrowserWindow({
     width: 1280,
@@ -26,10 +27,10 @@ function createWindow(): void {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
+      webviewTag: true,
     },
   });
 
-  tabManager = new TabManager(mainWindow, privacyEngine, settings);
   registerIpcHandlers(tabManager, storeManager, mainWindow);
 
   if (process.env.NODE_ENV === 'development') {
@@ -38,16 +39,7 @@ function createWindow(): void {
     mainWindow.loadFile(path.join(__dirname, '..', '..', 'renderer', 'index.html'));
   }
 
-  mainWindow.on('resize', () => {
-    if (tabManager) {
-      tabManager.updateActiveBounds();
-    }
-  });
-
   mainWindow.on('closed', () => {
-    if (tabManager && settings.cleanupOnExit) {
-      tabManager.cleanupAll();
-    }
     mainWindow = null;
   });
 }
@@ -55,11 +47,10 @@ function createWindow(): void {
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
+  if (tabManager) tabManager.cleanupAll();
   app.quit();
 });
 
 app.on('before-quit', () => {
-  if (tabManager) {
-    tabManager.cleanupAll();
-  }
+  if (tabManager) tabManager.cleanupAll();
 });

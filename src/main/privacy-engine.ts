@@ -82,7 +82,7 @@ export class PrivacyEngine {
     });
   }
 
-  attachToSession(ses: Session, tabId: string): void {
+  attachToSession(ses: Session): void {
     if (!this.settings.blockTrackers) return;
 
     ses.webRequest.onBeforeRequest(

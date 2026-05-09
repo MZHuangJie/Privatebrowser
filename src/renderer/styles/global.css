@@ -23,3 +23,9 @@ body { font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe
 
 /* Firefox */
 * { scrollbar-width: thin; scrollbar-color: var(--bg-hover) transparent; }
+
+.webview-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}

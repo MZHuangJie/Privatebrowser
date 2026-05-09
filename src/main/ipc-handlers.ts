@@ -1,4 +1,5 @@
 import { ipcMain, BrowserWindow } from 'electron';
+import * as path from 'path';
 import { TabManager } from './tab-manager';
 import { StoreManager } from './store-manager';
 import { BrowserSettings } from '../shared/types';
@@ -8,52 +9,15 @@ export function registerIpcHandlers(
   storeManager: StoreManager,
   mainWindow: BrowserWindow
 ): void {
-  ipcMain.handle('tab:create', (_e, url?: string) => {
-    return tabManager.createTab(url);
+  ipcMain.handle('getPreloadPath', () => {
+    return `file://${path.join(__dirname, '..', '..', 'preload', 'content.js').replace(/\\/g, '/')}`;
+  });
+  ipcMain.handle('session:ensure', (_e, partitionKey: string) => {
+    tabManager.ensureSession(partitionKey);
   });
 
-  ipcMain.handle('tab:close', (_e, tabId: string) => {
-    tabManager.closeTab(tabId);
-  });
-
-  ipcMain.handle('tab:switch', (_e, tabId: string) => {
-    tabManager.switchTab(tabId);
-  });
-
-  ipcMain.handle('tab:pin', (_e, tabId: string) => {
-    tabManager.togglePin(tabId);
-  });
-
-  ipcMain.handle('nav:go', (_e, payload: { tabId: string; url: string }) => {
-    tabManager.navigate(payload.tabId, payload.url);
-  });
-
-  ipcMain.handle('nav:back', (_e, tabId: string) => {
-    tabManager.goBack(tabId);
-  });
-
-  ipcMain.handle('nav:forward', (_e, tabId: string) => {
-    tabManager.goForward(tabId);
-  });
-
-  ipcMain.handle('nav:reload', (_e, tabId: string) => {
-    tabManager.reload(tabId);
-  });
-
-  ipcMain.handle('nav:stop', (_e, tabId: string) => {
-    tabManager.stopLoading(tabId);
-  });
-
-  ipcMain.handle('tabs:getAll', () => {
-    return tabManager.getAllTabs();
-  });
-
-  ipcMain.handle('tab:hideActive', () => {
-    tabManager.hideActiveView();
-  });
-
-  ipcMain.handle('tab:showActive', () => {
-    tabManager.showActiveView();
+  ipcMain.handle('session:clear', (_e, partitionKey: string) => {
+    tabManager.removeSession(partitionKey);
   });
 
   ipcMain.handle('settings:get', () => {
@@ -93,19 +57,10 @@ export function registerIpcHandlers(
     return storeManager.getBookmarks();
   });
 
-  ipcMain.handle('window:minimize', () => {
-    mainWindow.minimize();
-  });
-
+  ipcMain.handle('window:minimize', () => mainWindow.minimize());
   ipcMain.handle('window:maximize', () => {
-    if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow.maximize();
-    }
+    if (mainWindow.isMaximized()) mainWindow.unmaximize();
+    else mainWindow.maximize();
   });
-
-  ipcMain.handle('window:close', () => {
-    mainWindow.close();
-  });
+  ipcMain.handle('window:close', () => mainWindow.close());
 }
