@@ -1,7 +1,9 @@
 .address-bar {
-  padding: 6px 10px;
+  padding: 5px 10px;
   background: var(--bg-secondary);
   -webkit-app-region: no-drag;
+  height: 38px;
+  flex-shrink: 0;
 }
 
 .address-form {
@@ -9,20 +11,22 @@
   align-items: center;
   background: var(--bg-tertiary);
   border-radius: 20px;
-  padding: 4px 14px;
+  padding: 3px 14px;
   gap: 8px;
+  height: 28px;
 }
 
-.address-lock { font-size: 12px; flex-shrink: 0; }
+.address-lock { font-size: 12px; flex-shrink: 0; line-height: 1; }
 
 .address-bookmark {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   color: var(--text-muted);
   padding: 0 2px;
   flex-shrink: 0;
+  line-height: 1;
   transition: color 0.15s;
 }
 
@@ -35,6 +39,7 @@
   border: none;
   color: var(--text-primary);
   font-size: 13px;
+  line-height: 22px;
   outline: none;
   font-family: inherit;
 }
@@ -43,6 +48,7 @@
 
 .address-spinner {
   font-size: 14px;
+  line-height: 1;
   animation: spin 1s linear infinite;
 }
 
@@ -55,5 +61,6 @@
   padding: 1px 8px;
   font-size: 10px;
   font-weight: 600;
+  line-height: 16px;
   white-space: nowrap;
 }
